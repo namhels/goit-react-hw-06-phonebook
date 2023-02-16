@@ -1,10 +1,14 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 // import { useState, useEffect } from "react";
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 // import { save, get } from 'utils';
-import useLocalStorage from 'hooks/useLocalStorage';
+// import useLocalStorage from 'hooks/useLocalStorage';
+import { getContacts, getFilter } from 'redux/selectors';
+import { addContact, deleteContact } from 'redux/contactsSlice';
+import { valueFilter } from 'redux/filterSlice';
 import Box from 'components/Box';
 import { Headline } from 'components/Title';
 import ContactList from 'components/ContactList';
@@ -12,12 +16,16 @@ import Filter from 'components/Filter';
 // import Form from 'components/Form';
 import FormFormik from 'components/Formik';
 
-const CONTACTS_KEY = 'contacts';
+// const CONTACTS_KEY = 'contacts';
 
 const App = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
   // ======<<< with custom hook useLocalStorage >>>========
-  const [contacts, setContacts] = useLocalStorage(CONTACTS_KEY, []);
-  const [filter, setFilter] = useState('');
+  // const [contacts, setContacts] = useLocalStorage(CONTACTS_KEY, []);
+  // const [filter, setFilter] = useState('');
 
   // ======<<< alternative >>>=============
   // ======<<< lazy load state initialization >>>=============
@@ -27,23 +35,30 @@ const App = () => {
   //   save(CONTACTS_KEY, contacts);
   // }, [contacts]);
 
-  const addContact = (name, number) => {
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-    if (contacts.find(el => el.name === contact.name)) {
-      toast.error(`${contact.name} is already in contacts`);
+  const addContacti = (name, number) => {
+    // const contact = {
+    //   id: nanoid(),
+    //   name,
+    //   number,
+    // };
+    if (contacts.find(el => el.name === name)) {
+      toast.error(`${name} is already in contacts`);
       return;
     }
-    setContacts(prevContacts => [contact, ...prevContacts]);
-    toast.success(`${contact.name} was added to contacts`);
+    dispatch(addContact(name, number));
+    // setContacts(prevContacts => [contact, ...prevContacts]);
+    toast.success(`${name} was added to contacts`);
   };
 
   const changeFilter = e => {
-    setFilter(e.currentTarget.value);
+    dispatch(valueFilter(e.currentTarget.value));
+    // setFilter(e.currentTarget.value);
   };
+
+  // console.log(getContacts);
+  // console.log(useSelector(getContacts));
+  // console.log(contacts);
+  // console.log(filter);
 
   const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase().trim();
@@ -52,10 +67,11 @@ const App = () => {
     );
   };
 
-  const deleteContact = ({ id, name }) => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
+  const deleteContacti = ({ id, name }) => {
+    dispatch(deleteContact(id));
+    // setContacts(prevContacts =>
+    //   prevContacts.filter(contact => contact.id !== id)
+    // );
     toast.warn(`${name} was deleted from contacts`);
   };
 
@@ -73,11 +89,11 @@ const App = () => {
         mx="auto"
       >
         <Headline HeadlineLogo>Phonebook</Headline>
-        <FormFormik onSubmit={addContact}></FormFormik>
+        <FormFormik onSubmit={addContacti}></FormFormik>
         <Headline>Contacts</Headline>
         <ContactList
           contacts={getVisibleContacts()}
-          onDeleteContact={deleteContact}
+          onDeleteContact={deleteContacti}
         >
           <Filter value={filter} onChange={changeFilter} />
         </ContactList>
