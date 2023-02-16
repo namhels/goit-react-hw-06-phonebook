@@ -23,6 +23,12 @@ const App = () => {
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
 
+  console.log(contacts);
+  console.log(filter);
+  // console.log(useSelector(getContacts));
+  // console.log(contacts);
+  // console.log(filter);
+
   // ======<<< with custom hook useLocalStorage >>>========
   // const [contacts, setContacts] = useLocalStorage(CONTACTS_KEY, []);
   // const [filter, setFilter] = useState('');
@@ -54,11 +60,6 @@ const App = () => {
     dispatch(valueFilter(e.currentTarget.value));
     // setFilter(e.currentTarget.value);
   };
-
-  // console.log(getContacts);
-  // console.log(useSelector(getContacts));
-  // console.log(contacts);
-  // console.log(filter);
 
   const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase().trim();
