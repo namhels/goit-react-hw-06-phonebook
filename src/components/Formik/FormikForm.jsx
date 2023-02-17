@@ -1,9 +1,17 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { BsFillPersonFill, BsFillTelephoneFill } from 'react-icons/bs';
-import { Button, ContactForm, Input, FormError, InputWrapper } from './FormikForm.Styled';
+import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/contactsSlice';
+import {
+  Button,
+  ContactForm,
+  Input,
+  FormError,
+  InputWrapper,
+} from './FormikForm.Styled';
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -15,9 +23,17 @@ const initialValues = {
   number: '',
 };
 
-const FormFormik = ({onSubmit}) => {
+const FormFormik = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
   const handleSubmit = ({ name, number }, { resetForm }) => {
-    onSubmit(name, number);
+    if (contacts.find(el => el.name === name)) {
+      toast.error(`${name} is already in contacts`);
+      return;
+    }
+    dispatch(addContact(name, number));
+    toast.success(`${name} was added to contacts`);
     resetForm();
   };
 
@@ -29,34 +45,19 @@ const FormFormik = ({onSubmit}) => {
     >
       <ContactForm autoComplete="off">
         <InputWrapper>
-          <Input
-            type="text"
-            name="name"
-            placeholder="name"
-            required
-          />
+          <Input type="text" name="name" placeholder="name" required />
           <BsFillPersonFill />
         </InputWrapper>
         <FormError name="name" />
         <InputWrapper>
-          <Input
-            type="tel"
-            name="number"
-            placeholder="number"
-            required
-          />
+          <Input type="tel" name="number" placeholder="number" required />
           <BsFillTelephoneFill />
         </InputWrapper>
         <FormError name="number" />
         <Button type="submit">add contact</Button>
       </ContactForm>
     </Formik>
-    );
-};
-
-FormFormik.propTypes = {
-  name: PropTypes.string,
-  number: PropTypes.string,
+  );
 };
 
 export default FormFormik;

@@ -1,17 +1,16 @@
-// import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button, ContactForm, Input } from './Form.Styled';
 
 class Form extends Component {
-//   static propTypes = {
-//     name: PropTypes.string,
-//     number: PropTypes.string,
-//   };
+  //   static propTypes = {
+  //     name: PropTypes.string,
+  //     number: PropTypes.string,
+  //   };
 
-//   state = {
-//     name: '',
-//     number: '',
-// }
+  //   state = {
+  //     name: '',
+  //     number: '',
+  // }
 
   // handleChange = e => {
   //   const { name, value } = e.currentTarget;
@@ -27,18 +26,17 @@ class Form extends Component {
     const { name, number } = e.target.elements;
     this.props.onSubmit(name.value, number.value);
     this.resetForm(name, number);
-  }
+  };
 
   resetForm = (name, number) => {
-    name.value = "";
-    number.value = "";
+    name.value = '';
+    number.value = '';
   };
 
   render() {
     // const { name, number } = this.state;
     return (
-      <ContactForm autoComplete="off"
-        onSubmit={this.handleSubmit}>
+      <ContactForm autoComplete="off" onSubmit={this.handleSubmit}>
         <Input
           type="text"
           name="name"
@@ -62,7 +60,7 @@ class Form extends Component {
         <Button type="submit">add contact</Button>
       </ContactForm>
     );
-  };
-};
+  }
+}
 
 export default Form;
